@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.SignalR;
 using MultiSnake.Hubs;
 using MultiSnake.Structs;
@@ -21,7 +22,7 @@ var app = builder.Build();
 app.UseCors();
 
 app.MapGet("/", () => "Hello World!");
-app.MapHub<RoomHub>("/socket"); 
+app.MapHub<RoomHub>("/socket");
 
 app.Run();
 
