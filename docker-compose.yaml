@@ -10,7 +10,7 @@ services:
     image: ${DOCKER_REGISTRY-}multisnake
     container_name: 'MultiSnake'
     ports:
-      - 5001:80
+      - 5015:80
     build:
       context: .
       dockerfile: Dockerfile
