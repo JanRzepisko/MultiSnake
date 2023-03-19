@@ -10,7 +10,7 @@ builder.Services.AddCors(c =>
         .AllowAnyHeader()
         .AllowAnyMethod()
         //.WithOrigins("172.20.10.3:5001", "http://localhost:5500")
-        .WithOrigins("localhost:5001", "http://localhost:5500")
+        .WithOrigins("localhost:5015", "http://localhost:5500")
         .AllowCredentials());
 });
 builder.Services.AddDistributedMemoryCache();
