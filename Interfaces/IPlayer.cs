@@ -1,4 +1,3 @@
-
 using MultiSnake.Structs;
 
 namespace MultiSnake.Interfaces;
