@@ -14,7 +14,7 @@ public class RedisService : IRedisService
         _cache = cache;
     }
 
-    public async Task<string> GetAsync<T>(string game, string key, CancellationToken cancellationToken = default) where T : class
+    public async Task<object> GetAsync(string game, string key, CancellationToken cancellationToken = default)
     {
         string? value = await _cache.GetStringAsync($"{game}_{key}", cancellationToken);
         if (value is null)

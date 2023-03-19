@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  redis_image:
+    image: redis
+    container_name: cache
+    ports:
+      - "6379:6379"
+  Api:
+    image: ${DOCKER_REGISTRY-}multisnake
+    container_name: 'MultiSnake'
+    ports:
+      - 5001:80
+    build:
+      context: .
+      dockerfile: Dockerfile
