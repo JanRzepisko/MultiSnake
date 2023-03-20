@@ -8,11 +8,19 @@ public class Point
         Y = y;
     }
 
-    public int X { get; }
-    public int Y { get; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
 
     public Point MinusOnePosition()
     {
         return new Point(X -1, Y);
+    }
+    
+    
+    public void RandomPoint()
+    {
+        Random r = new Random();
+        X = r.Next(0, 30);
+        Y = r.Next(0,30);
     }
 }

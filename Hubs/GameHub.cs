@@ -17,6 +17,7 @@ public class GameHub : Hub
 
     public override async Task OnConnectedAsync()
     {
+        Console.WriteLine("eoo eo");
         await Clients.All.SendAsync("GET", "Hello");
     }
 
@@ -27,7 +28,7 @@ public class GameHub : Hub
     }
     
     [HubMethodName("Move")]
-    public async Task<object> Move(string GameId, PlayerType playerID, Point Step)
+    public async Task Move(string GameId, PlayerType playerID, Point Step)
     {
         var game = await _redis.GetAsync<Game>(GameId, Keys.GAME_KEY);
         var snakePlayer = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, playerID);
@@ -41,14 +42,21 @@ public class GameHub : Hub
         else
             snakeOpponent = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, PlayerType.Blue);
 
-        return new { opponent=snakeOpponent, game };
+        await Clients.Caller.SendAsync("SEND", new { opponent=snakeOpponent, game });
     }
-    [HubMethodName("Consume")]
-    public async Task Consume(string GameId, PlayerType playerID)
+    [HubMethodName("Eat")]
+    public async Task Eat(string GameId, PlayerType playerID)
     {
         await _redis.GetAsync<Game>(GameId, Keys.GAME_KEY);
+        var game = await _redis.GetAsync<Game>(GameId, Keys.GAME_KEY);
+        game.Food.RandomPoint();
+
+        await _redis.RemoveAsync(GameId, Keys.GAME_KEY);
+        await _redis.CreateAsync(GameId, Keys.GAME_KEY, game);
+
         var snakePlayer = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, playerID);
         snakePlayer.AddElement();
+        
         await _redis.RemoveAsync(GameId, Keys.SNAKE_KEY, playerID);
         await _redis.CreateAsync(GameId, Keys.SNAKE_KEY, playerID, snakePlayer);
     }

@@ -14,7 +14,14 @@ public class Snake : IPlayer
     {
         var newPositions = new List<Point> { position };
         int i = 0;
-        newPositions.AddRange(Positions.TakeWhile(item => i <= Positions.Count - 2));
+
+        foreach (var p in Positions)
+        {
+           newPositions.Add(p);
+           i++;
+           if(i > Positions.Count - 2)
+               break;
+        }
 
         Positions = newPositions;
     }

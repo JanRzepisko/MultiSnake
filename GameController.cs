@@ -26,8 +26,15 @@ public class GameController : Controller
             Name = "Blue",
             PlayerID = PlayerType.Blue,
             GameId = gameID,
-            Positions = { new Point(-10, 0) }
         };
+        
+        snakeBlue.Positions.Add(new Point(7, 15));
+        snakeBlue.Positions.Add(new Point(6, 15));
+        snakeBlue.Positions.Add(new Point(5, 15));
+        snakeBlue.Positions.Add(new Point(4, 15));
+        snakeBlue.Positions.Add(new Point(3, 15));
+        snakeBlue.Positions.Add(new Point(2, 15));
+
         var snakeRed = new Snake
         {
             Name = "Red",
@@ -35,11 +42,16 @@ public class GameController : Controller
             GameId = gameID,
             Positions = { new Point(10, 0) }
         };
-
+        snakeRed.Positions.Add(new Point(7, 15));
+        snakeRed.Positions.Add(new Point(6, 15));
+        snakeRed.Positions.Add(new Point(5, 15));
+        snakeRed.Positions.Add(new Point(4, 15));
+        snakeRed.Positions.Add(new Point(3, 15));
+        snakeRed.Positions.Add(new Point(2, 15));
         var game = new Game
         {
             GameId = gameID,
-            Food = new Point(0, 0)
+            Food = new Point(14, 14)
         };
         await _redis.CreateAsync(gameID, Keys.GAME_KEY, game);
         await _redis.CreateAsync(gameID, Keys.SNAKE_KEY, PlayerType.Blue, snakeBlue);
