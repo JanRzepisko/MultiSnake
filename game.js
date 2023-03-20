@@ -244,8 +244,8 @@ const drawRemote = (body) => {
   });
 };
 
-const GAME_ID = "Y1LT3D";
-const IP = "172.20.10.2:5015"; //91.227.2.183:85
+const GAME_ID = "7I0SCU";
+const IP = "192.168.1.100:5015"; //91.227.2.183:85
 let remote_snake = [];
 let localSnake = null;
 
