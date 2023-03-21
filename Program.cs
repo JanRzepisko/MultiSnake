@@ -9,7 +9,8 @@ builder.Services.AddCors(c =>
     c.AddDefaultPolicy(policyBuilder => policyBuilder
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .WithOrigins("91.227.2.183:5003", "http://127.0.0.1:5500")
+        //.WithOrigins("91.227.2.183:5003", "http://127.0.0.1:5500")
+        .WithOrigins("91.227.2.183:5003", "http://91.227.2.183:85")
         //.WithOrigins("http://127.0.0.1:5500'", "http://localhost:5500", "127.0.0.1:5003", "*")
         .AllowCredentials());
 });
