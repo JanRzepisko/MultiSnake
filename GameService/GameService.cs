@@ -20,35 +20,21 @@ public class GameService : IGameService
         {
             var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
             Snake? snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
-            if (snakePlayer is null)
-            {
-                Console.WriteLine("Bad Game Id");
-                return "Bad Game Id";
-            }
-
             snakePlayer.Move(step);
             await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
             await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snakePlayer);
-            Snake snakeOpponent;
+            Snake? snakeOpponent;
 
             if (snakePlayer.PlayerID == PlayerType.Blue)
                 snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Red);
             else
                 snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Blue);
-
-            if (snakeOpponent is null)
-            {
-                Console.WriteLine("Bad Game Id");
-                return "Bad Game Id";
-            }
-
             return new { opponent = snakeOpponent, game };
         }
         catch(NullReferenceException)
         {
             Console.WriteLine("Bad Game Id");
-
-            return "Bad Game Id";
+            return "BAD_GAME_ID";
         }
     }
 
@@ -56,7 +42,6 @@ public class GameService : IGameService
     {
         try
         {
-            await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
             var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
             game.Food.RandomPoint();
 
@@ -75,19 +60,23 @@ public class GameService : IGameService
         }
     }
 
-    public async Task<string> CreateGame()
+    public async Task<string> CreateGame(string name)
     {
         //Init Game
         var gameId = Game.RandomString(6);
         var game = new Game(gameId);
         game.InitGame();
-        
-        //Save game instance in Redis
+
+        game.SnakeBlue.Name = name;
+
+            //Save game instance in Redis
         await _redis.CreateAsync(gameId, Keys.GAME_KEY, game);
+        
         await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Blue, game.SnakeBlue);
         await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Red, game.SnakeRed);
         return gameId;
     }
+    
     public Task EndGame(string gameId)
     {
         throw new NotImplementedException();
@@ -95,5 +84,10 @@ public class GameService : IGameService
     public Task<Game> GetGameInstance(string gameId)
     {
         return _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
+    }
+
+    public async Task<object> JoinGame(string gameId, string name)
+    {
+        return "";
     }
 }

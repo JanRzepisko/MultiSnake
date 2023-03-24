@@ -19,7 +19,9 @@ public class GameController : Controller
     }
 
     [HttpPost("Start")]
-    public Task<string> Start() => _game.CreateGame();
+    public Task<string> Start() => _game.CreateGame("Janek");
+    //[HttpPost("Join")]
+    //public Task<string> Join(string gameId, string name) => _game.JoinGame(gameId, name);
 
     [HttpPost("GameOver")]
     public Task GameOver(string gameId) => _game.EndGame(gameId);

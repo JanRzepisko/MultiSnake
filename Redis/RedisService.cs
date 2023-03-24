@@ -10,7 +10,7 @@ namespace MultiSnake.Services.implementations;
 public class RedisService : IRedisService
 {
     private readonly IDistributedCache _cache;
-    public List<string> _keys = new List<string>();
+    private List<string?> _keys = new List<string?>();
 
 
     public RedisService(IDistributedCache cache)
@@ -37,11 +37,11 @@ public class RedisService : IRedisService
             cancellationToken);
     }
 
-    public async Task RemoveAsync(string game, string key, PlayerType playerID,
+    public async Task RemoveAsync(string game, string key, PlayerType playerId,
         CancellationToken cancellationToken = default)
     {
-        await _cache.RemoveAsync($"{game}_{playerID}_{key}", cancellationToken);
-        _keys.Remove($"{game}_{playerID}_{key}");
+        _keys.Remove($"{game}_{playerId}_{key}");
+        await _cache.RemoveAsync($"{game}_{playerId}_{key}", cancellationToken);
     }
 
     public async Task<T?> GetAsync<T>(string game, string key, CancellationToken cancellationToken = default)
@@ -64,8 +64,8 @@ public class RedisService : IRedisService
 
     public async Task RemoveAsync(string game, string key, CancellationToken cancellationToken = default)
     {
-        await _cache.RemoveAsync($"{game}_{key}", cancellationToken);
         _keys.Remove($"{game}_{key}");
+        await _cache.RemoveAsync($"{game}_{key}", cancellationToken);
     }
 
 
