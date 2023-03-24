@@ -1,6 +1,6 @@
 using MultiSnake.GameService;
 using MultiSnake.Hubs;
-using MultiSnake.Services.implementations;
+using MultiSnake.Redis;
 using MultiSnake.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);

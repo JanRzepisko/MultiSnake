@@ -2,15 +2,16 @@ using System.Text;
 using Microsoft.Extensions.Caching.Distributed;
 using MultiSnake.Enums;
 using MultiSnake.Services.Interfaces;
+using MultiSnake.Structs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace MultiSnake.Services.implementations;
+namespace MultiSnake.Redis;
 
 public class RedisService : IRedisService
 {
     private readonly IDistributedCache _cache;
-    private List<string?> _keys = new List<string?>();
+    private readonly List<string?> _keys = new List<string?>();
 
 
     public RedisService(IDistributedCache cache)
@@ -69,10 +70,22 @@ public class RedisService : IRedisService
     }
 
 
-    public async Task<object> GetAll()
+    public async Task<List<Game>> GetAllGames()
     {
-        List<object> objects = new();
-        _keys.ForEach(async c => objects.Add( JsonConvert.DeserializeObject(await _cache.GetStringAsync(c))));
+        List<Game> objects = new();
+        var filteredKeys = _keys.Where(c => (c.ToString() ?? "").Contains(Keys.GAME_KEY)).ToList();
+        filteredKeys.ForEach(async c => objects.Add((await this.GetAsync<Game>(c))));
         return objects;
+    }
+
+    public async Task<T?> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+    {
+        var value = await _cache.GetStringAsync(key, cancellationToken);
+        if (value is null)
+        {
+            throw new NullReferenceException();
+        } 
+        return ((JsonConvert.DeserializeObject(value) as JObject)!).ToObject<T>();
+        
     }
 }

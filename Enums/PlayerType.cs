@@ -2,6 +2,7 @@ namespace MultiSnake.Enums;
 
 public enum PlayerType
 {
-    Red,
-    Blue
+    Player1,
+    Player2,
+    Viewer
 }

@@ -7,8 +7,9 @@ public class Snake : IPlayer
 {
     public List<Point> Positions { get; set; } = new();
     public string Name { get; set; }
+    public string Color { get; set; }
     public string GameId { get; set; }
-    public PlayerType PlayerID { get; set; }
+    public PlayerType PlayerId { get; set; }
 
     public void Move(Point position)
     {

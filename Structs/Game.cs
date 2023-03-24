@@ -9,8 +9,8 @@ public class Game
     public string GameId { get; }
     public Point Food { get; set; } = null!;
 
-    public Snake SnakeRed { get; private set; } = null!;
-    public Snake SnakeBlue { get; private set; } = null!;
+    public Snake Player1 { get; internal set; } = null!;
+    public Snake Player2 { get; internal set; } = null!;
 
     private static readonly Random Random = new();
 
@@ -18,32 +18,32 @@ public class Game
     {
         Food = new Point(14, 14);
         
-        SnakeBlue = new Snake()
+        Player2 = new Snake()
         {
-            Name = "Blue",
-            PlayerID = PlayerType.Blue,
+            Name = "",
+            PlayerId = PlayerType.Player2,
             GameId = this.GameId
         };
 
-        SnakeBlue.Positions.Add(new Point(7, 15));
-        SnakeBlue.Positions.Add(new Point(6, 15));
-        SnakeBlue.Positions.Add(new Point(5, 15));
-        SnakeBlue.Positions.Add(new Point(4, 15));
-        SnakeBlue.Positions.Add(new Point(3, 15));
-        SnakeBlue.Positions.Add(new Point(2, 15));
+        Player2.Positions.Add(new Point(7, 15));
+        Player2.Positions.Add(new Point(6, 15));
+        Player2.Positions.Add(new Point(5, 15));
+        Player2.Positions.Add(new Point(4, 15));
+        Player2.Positions.Add(new Point(3, 15));
+        Player2.Positions.Add(new Point(2, 15));
 
-        SnakeRed = new Snake
+        Player1 = new Snake
         {
-            Name = "Red",
-            PlayerID = PlayerType.Red,
+            Name = "",
+            PlayerId = PlayerType.Player1,
             GameId = this.GameId
         };
-        SnakeRed.Positions.Add(new Point(29, 15));
-        SnakeRed.Positions.Add(new Point(28, 15));
-        SnakeRed.Positions.Add(new Point(27, 15));
-        SnakeRed.Positions.Add(new Point(26, 15));
-        SnakeRed.Positions.Add(new Point(25, 15));
-        SnakeRed.Positions.Add(new Point(24, 15));
+        Player1.Positions.Add(new Point(29, 15));
+        Player1.Positions.Add(new Point(28, 15));
+        Player1.Positions.Add(new Point(27, 15));
+        Player1.Positions.Add(new Point(26, 15));
+        Player1.Positions.Add(new Point(25, 15));
+        Player1.Positions.Add(new Point(24, 15));
     }
     
     public static string RandomString(int length)

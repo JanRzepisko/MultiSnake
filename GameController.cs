@@ -19,14 +19,14 @@ public class GameController : Controller
     }
 
     [HttpPost("Start")]
-    public Task<string> Start() => _game.CreateGame("Janek");
+    public Task<string> Start() => _game.CreateGame();
 
-    [HttpPost("Join")]
-    public async Task Join(string gameId, string name)
+    [HttpPost("Check")]
+    public async Task Check(string gameId, string name, string color, PlayerType player)
     {
         try
         {
-            await _game.JoinGame(gameId, name);
+            await _game.Check(gameId, name, color, player);
         }
         catch (Exception e)
         {
@@ -36,4 +36,7 @@ public class GameController : Controller
 
     [HttpPost("GameOver")]
     public Task GameOver(string gameId) => _game.EndGame(gameId);
+
+    [HttpGet("Rooms")]
+    public Task<List<Game>> GetAllGames() => _game.GetAllGames();
 }

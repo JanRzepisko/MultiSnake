@@ -25,10 +25,10 @@ public class GameService : IGameService
             await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snakePlayer);
             Snake? snakeOpponent;
 
-            if (snakePlayer.PlayerID == PlayerType.Blue)
-                snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Red);
+            if (snakePlayer.PlayerId == PlayerType.Player2)
+                snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Player1);
             else
-                snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Blue);
+                snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Player2);
             return new { opponent = snakeOpponent, game };
         }
         catch(NullReferenceException)
@@ -60,19 +60,18 @@ public class GameService : IGameService
         }
     }
 
-    public async Task<string> CreateGame(string name)
+    public async Task<string> CreateGame()
     {
         //Init Game
         var gameId = Game.RandomString(6);
         var game = new Game(gameId);
         game.InitGame();
-        game.SnakeBlue.Name = name; 
         
         //Save game instance in Redis
         await _redis.CreateAsync(gameId, Keys.GAME_KEY, game);
         
-        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Blue, game.SnakeBlue);
-        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Red, game.SnakeRed);
+        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player2, game.Player2);
+        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player1, game.Player1);
         return gameId;
     }
     
@@ -85,9 +84,29 @@ public class GameService : IGameService
         return _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
     }
 
-    public async Task JoinGame(string gameId, string name)
+    public async Task Check(string gameId, string name, string color, PlayerType player)
     {
         var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
-        game.SnakeRed.Name = name;
+        var snake = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
+        
+        snake.Color = color;
+        snake.Name = name;
+
+        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
+        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snake);
+    }
+
+    public async Task<List<Game>> GetAllGames()
+    {
+        var game =await _redis.GetAllGames();
+        var includeGames = new List<Game>();
+        foreach (var g in game)
+        {
+            g.Player1 = await _redis.GetAsync<Snake>(g.GameId, Keys.SNAKE_KEY, PlayerType.Player1);
+            g.Player2 = await _redis.GetAsync<Snake>(g.GameId, Keys.SNAKE_KEY, PlayerType.Player2);
+            includeGames.Add(g);
+        }
+
+        return includeGames;
     }
 }
