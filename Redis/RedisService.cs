@@ -18,7 +18,7 @@ public class RedisService : IRedisService
         _cache = cache;
     }
 
-    public async Task<T> GetAsync<T>(string game, string key, PlayerType playerID,
+    public async Task<T?> GetAsync<T>(string game, string key, PlayerType playerID,
         CancellationToken cancellationToken = default)
     {
         var value =  (JsonConvert.DeserializeObject(await _cache.GetStringAsync($"{game}_{playerID}_{key}", cancellationToken)) as JObject).ToObject<T>();
@@ -42,12 +42,9 @@ public class RedisService : IRedisService
         _keys.Remove($"{game}_{playerID}_{key}");
     }
 
-    public async Task<T> GetAsync<T>(string game, string key, CancellationToken cancellationToken = default)
+    public async Task<T?> GetAsync<T>(string game, string key, CancellationToken cancellationToken = default)
     {
-        var value = (JsonConvert.DeserializeObject(await _cache.GetStringAsync($"{game}_{key}", cancellationToken)) as JObject).ToObject<T>();
-        if (value is null)
-            throw new NullReferenceException();
-        return value;
+        return (JsonConvert.DeserializeObject(await _cache.GetStringAsync($"{game}_{key}", cancellationToken)) as JObject).ToObject<T>();
     }
 
     public async Task CreateAsync<T>(string game, string key, T obj, CancellationToken cancellationToken = default)
