@@ -16,45 +16,63 @@ public class GameService : IGameService
     }
     public async Task<object> MovePlayer(string gameId, PlayerType player, Point step)
     {
-        var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
-        Snake? snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
-        if (snakePlayer is null)
+        try
+        {
+            var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
+            Snake? snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
+            if (snakePlayer is null)
+            {
+                Console.WriteLine("Bad Game Id");
+                return "Bad Game Id";
+            }
+
+            snakePlayer.Move(step);
+            await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
+            await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snakePlayer);
+            Snake snakeOpponent;
+
+            if (snakePlayer.PlayerID == PlayerType.Blue)
+                snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Red);
+            else
+                snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Blue);
+
+            if (snakeOpponent is null)
+            {
+                Console.WriteLine("Bad Game Id");
+                return "Bad Game Id";
+            }
+
+            return new { opponent = snakeOpponent, game };
+        }
+        catch(NullReferenceException)
         {
             Console.WriteLine("Bad Game Id");
+
             return "Bad Game Id";
         }
-        snakePlayer.Move(step);
-        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
-        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snakePlayer);
-        Snake snakeOpponent;
-
-        if (snakePlayer.PlayerID == PlayerType.Blue)
-            snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Red);
-        else
-            snakeOpponent = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, PlayerType.Blue);
-
-        if (snakeOpponent is null)
-        {
-            Console.WriteLine("Bad Game Id");
-            return "Bad Game Id";
-        }
-        return new { opponent=snakeOpponent, game };    
     }
 
     public async Task MoveFood(string gameId, PlayerType player)
     {
-        await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
-        var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
-        game.Food.RandomPoint();
+        try
+        {
+            await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
+            var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
+            game.Food.RandomPoint();
 
-        await _redis.RemoveAsync(gameId, Keys.GAME_KEY);
-        await _redis.CreateAsync(gameId, Keys.GAME_KEY, game);
+            await _redis.RemoveAsync(gameId, Keys.GAME_KEY);
+            await _redis.CreateAsync(gameId, Keys.GAME_KEY, game);
 
-        var snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
-        snakePlayer.AddElement();
-        
-        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
-        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snakePlayer);
+            var snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
+            snakePlayer.AddElement();
+
+            await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
+            await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snakePlayer);
+        }
+        catch (NullReferenceException)
+        {
+            Console.WriteLine("Bad Game Id");
+        }
     }
 
     public async Task<string> CreateGame()

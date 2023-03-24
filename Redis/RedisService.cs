@@ -18,20 +18,22 @@ public class RedisService : IRedisService
         _cache = cache;
     }
 
-    public async Task<T?> GetAsync<T>(string game, string key, PlayerType playerID,
+    public async Task<T?> GetAsync<T>(string game, string key, PlayerType playerId,
         CancellationToken cancellationToken = default)
     {
-        var value =  (JsonConvert.DeserializeObject(await _cache.GetStringAsync($"{game}_{playerID}_{key}", cancellationToken)) as JObject).ToObject<T>();
+        var value = await _cache.GetStringAsync($"{game}_{playerId}_{key}", cancellationToken);
         if (value is null)
+        {
             throw new NullReferenceException();
-        return value;
+        } 
+        return (JsonConvert.DeserializeObject(value) as JObject)!.ToObject<T>();
     }
 
-    public async Task CreateAsync<T>(string game, string key, PlayerType playerID, T obj,
+    public async Task CreateAsync<T>(string game, string key, PlayerType playerId, T obj,
         CancellationToken cancellationToken = default) where T : class
     {
-        _keys.Add($"{game}_{playerID}_{key}");
-        await _cache.SetAsync($"{game}_{playerID}_{key}", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj)),
+        _keys.Add($"{game}_{playerId}_{key}");
+        await _cache.SetAsync($"{game}_{playerId}_{key}", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(obj)),
             cancellationToken);
     }
 
@@ -44,7 +46,12 @@ public class RedisService : IRedisService
 
     public async Task<T?> GetAsync<T>(string game, string key, CancellationToken cancellationToken = default)
     {
-        return (JsonConvert.DeserializeObject(await _cache.GetStringAsync($"{game}_{key}", cancellationToken)) as JObject).ToObject<T>();
+        var value = await _cache.GetStringAsync($"{game}_{key}", cancellationToken);
+        if (value is null)
+        {
+            throw new NullReferenceException();
+        } 
+        return ((JsonConvert.DeserializeObject(value) as JObject)!).ToObject<T>();
     }
 
     public async Task CreateAsync<T>(string game, string key, T obj, CancellationToken cancellationToken = default)
