@@ -21,6 +21,6 @@ public class Point
     {
         Random r = new Random();
         X = r.Next(1, 29);
-        Y = r.Next(1, 39);
+        Y = r.Next(1, 29);
     }
 }
