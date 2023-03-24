@@ -9,5 +9,5 @@ public interface IGameService
     public Task<string> CreateGame(string name);
     public Task EndGame(string gameId);
     public Task<Game> GetGameInstance(string gameId);
-    public Task<object> JoinGame(string gameId, string name);
+    public Task JoinGame(string gameId, string name);
 }

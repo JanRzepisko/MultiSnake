@@ -66,10 +66,9 @@ public class GameService : IGameService
         var gameId = Game.RandomString(6);
         var game = new Game(gameId);
         game.InitGame();
-
-        game.SnakeBlue.Name = name;
-
-            //Save game instance in Redis
+        game.SnakeBlue.Name = name; 
+        
+        //Save game instance in Redis
         await _redis.CreateAsync(gameId, Keys.GAME_KEY, game);
         
         await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Blue, game.SnakeBlue);
@@ -86,8 +85,9 @@ public class GameService : IGameService
         return _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
     }
 
-    public async Task<object> JoinGame(string gameId, string name)
+    public async Task JoinGame(string gameId, string name)
     {
-        return "";
+        var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
+        game.SnakeRed.Name = name;
     }
 }

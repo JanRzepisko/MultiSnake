@@ -20,8 +20,19 @@ public class GameController : Controller
 
     [HttpPost("Start")]
     public Task<string> Start() => _game.CreateGame("Janek");
-    //[HttpPost("Join")]
-    //public Task<string> Join(string gameId, string name) => _game.JoinGame(gameId, name);
+
+    [HttpPost("Join")]
+    public async Task Join(string gameId, string name)
+    {
+        try
+        {
+            await _game.JoinGame(gameId, name);
+        }
+        catch (Exception e)
+        {
+            BadRequest("BAD_GAME_ID");
+        }
+    }
 
     [HttpPost("GameOver")]
     public Task GameOver(string gameId) => _game.EndGame(gameId);
