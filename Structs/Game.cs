@@ -38,12 +38,12 @@ public class Game
             PlayerID = PlayerType.Red,
             GameId = this.GameId
         };
-        SnakeRed.Positions.Add(new Point(7, 15));
-        SnakeRed.Positions.Add(new Point(6, 15));
-        SnakeRed.Positions.Add(new Point(5, 15));
-        SnakeRed.Positions.Add(new Point(4, 15));
-        SnakeRed.Positions.Add(new Point(3, 15));
-        SnakeRed.Positions.Add(new Point(2, 15));
+        SnakeRed.Positions.Add(new Point(29, 15));
+        SnakeRed.Positions.Add(new Point(28, 15));
+        SnakeRed.Positions.Add(new Point(27, 15));
+        SnakeRed.Positions.Add(new Point(26, 15));
+        SnakeRed.Positions.Add(new Point(25, 15));
+        SnakeRed.Positions.Add(new Point(24, 15));
     }
     
     public static string RandomString(int length)

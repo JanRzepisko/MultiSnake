@@ -20,7 +20,7 @@ public class Point
     public void RandomPoint()
     {
         Random r = new Random();
-        X = r.Next(0, 30);
-        Y = r.Next(0,30);
+        X = r.Next(1, 29);
+        Y = r.Next(1, 39);
     }
 }
