@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 using MultiSnake.Enums;
+using MultiSnake.GameService;
 using MultiSnake.Redis;
 using MultiSnake.Services.Interfaces;
 using MultiSnake.Structs;
@@ -8,56 +9,23 @@ namespace MultiSnake.Hubs;
 
 public class GameHub : Hub
 {
-    private readonly IRedisService _redis;
+    private readonly IGameService _game;
 
-    public GameHub(IRedisService redis)
+    public GameHub(IGameService game)
     {
-        _redis = redis;
+        _game = game;
     }
-
     public override async Task OnConnectedAsync()
     {
-        Console.WriteLine("eoo eo");
-        await Clients.All.SendAsync("GET", "Hello");
+        await Clients.All.SendAsync("Hej");
     }
 
-    public override Task OnDisconnectedAsync(Exception? exception)
-    {
-        Console.WriteLine("Pa pa");
-        return Task.CompletedTask;
-    }
-    
     [HubMethodName("Move")]
-    public async Task Move(string GameId, PlayerType playerID, Point Step)
+    public async Task Move(string gameId, PlayerType playerId, Point step)
     {
-        var game = await _redis.GetAsync<Game>(GameId, Keys.GAME_KEY);
-        var snakePlayer = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, playerID);
-        snakePlayer.Move(Step);
-        await _redis.RemoveAsync(GameId, Keys.SNAKE_KEY, playerID);
-        await _redis.CreateAsync(GameId, Keys.SNAKE_KEY, playerID, snakePlayer);
-        var snakeOpponent = new Snake();
-
-        if (snakePlayer.PlayerID == PlayerType.Blue)
-            snakeOpponent = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, PlayerType.Red);
-        else
-            snakeOpponent = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, PlayerType.Blue);
-
-        await Clients.Caller.SendAsync("SEND", new { opponent=snakeOpponent, game });
+        var response = _game.MovePlayer(gameId, playerId, step);
+        await Clients.Caller.SendAsync("SEND", await response);
     }
     [HubMethodName("Eat")]
-    public async Task Eat(string GameId, PlayerType playerID)
-    {
-        await _redis.GetAsync<Game>(GameId, Keys.GAME_KEY);
-        var game = await _redis.GetAsync<Game>(GameId, Keys.GAME_KEY);
-        game.Food.RandomPoint();
-
-        await _redis.RemoveAsync(GameId, Keys.GAME_KEY);
-        await _redis.CreateAsync(GameId, Keys.GAME_KEY, game);
-
-        var snakePlayer = await _redis.GetAsync<Snake>(GameId, Keys.SNAKE_KEY, playerID);
-        snakePlayer.AddElement();
-        
-        await _redis.RemoveAsync(GameId, Keys.SNAKE_KEY, playerID);
-        await _redis.CreateAsync(GameId, Keys.SNAKE_KEY, playerID, snakePlayer);
-    }
+    public Task Eat(string gameId, PlayerType playerId) => _game.MoveFood(gameId, playerId);
 }

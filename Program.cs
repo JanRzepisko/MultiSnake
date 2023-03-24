@@ -1,3 +1,4 @@
+using MultiSnake.GameService;
 using MultiSnake.Hubs;
 using MultiSnake.Services.implementations;
 using MultiSnake.Services.Interfaces;
@@ -10,12 +11,13 @@ builder.Services.AddCors(c =>
         .AllowAnyHeader()
         .AllowAnyMethod()
         //.WithOrigins("91.227.2.183:5003", "http://127.0.0.1:5500")
-        .WithOrigins("91.227.2.183:5003", "http://91.227.2.183:85")
-        //.WithOrigins("http://127.0.0.1:5500'", "http://localhost:5500", "127.0.0.1:5003", "*")
+        //.WithOrigins("91.227.2.183:5003", "http://91.227.2.183:85")
+        .WithOrigins("http://127.0.0.1:5500'", "http://localhost:5500", "127.0.0.1:5003", "*")
         .AllowCredentials());
 });
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IRedisService, RedisService>();
+builder.Services.AddTransient<IGameService, GameService>();
 builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
