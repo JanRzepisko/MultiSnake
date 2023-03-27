@@ -32,7 +32,7 @@ public class GameHub : Hub
     [HubMethodName("GameOver")]
     public async Task GameOver(string gameId, GameOver whoWon)
     {
-        await Clients.All.SendAsync("SEND", new { gameId, whoWon });
-        await _game.RemoveRoom(gameId);
+       await Clients.All.SendAsync("GameOver", new { gameId, whoWon }); 
+       await _game.RemoveRoom(gameId);
     }
 }

@@ -79,8 +79,7 @@ public class GameService : IGameService
     {
         await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player1);
         await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player2);
-        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY);
-
+        await _redis.RemoveAsync(gameId, Keys.GAME_KEY);
     }
 
     public Task<Game> GetGameInstance(string gameId)
