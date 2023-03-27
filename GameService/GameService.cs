@@ -75,9 +75,13 @@ public class GameService : IGameService
         return gameId;
     }
     
-    public Task EndGame(string gameId)
+    public async Task EndGame(string gameId, PlayerType winner)
     {
-        throw new NotImplementedException();
+        var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
+        var snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, winner);
+        snakePlayer.Won = true;
+        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, winner);
+        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, winner, snakePlayer);
     }
     public Task<Game> GetGameInstance(string gameId)
     {

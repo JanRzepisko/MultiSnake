@@ -6,6 +6,7 @@ namespace MultiSnake.Structs;
 public class Snake : IPlayer
 {
     public List<Point> Positions { get; set; } = new();
+    public bool Won { get; set; } = false;
     public string Name { get; set; }
     public string Color { get; set; }
     public string GameId { get; set; }

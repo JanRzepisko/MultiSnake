@@ -35,7 +35,7 @@ public class GameController : Controller
     }
 
     [HttpPost("GameOver")]
-    public Task GameOver(string gameId) => _game.EndGame(gameId);
+    public Task GameOver(string gameId, PlayerType winner) => _game.EndGame(gameId, winner);
 
     [HttpGet("Rooms")]
     public Task<List<Game>> GetAllGames() => _game.GetAllGames();
