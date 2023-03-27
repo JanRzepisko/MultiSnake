@@ -22,21 +22,20 @@ public class GameController : Controller
     public Task<string> Start() => _game.CreateGame();
 
     [HttpPost("Check")]
-    public async Task Check(string gameId, string name, string color, PlayerType player)
+    public async Task<Snake> Check(string gameId, string name, string color, PlayerType player)
     {
         try
         {
-            await _game.Check(gameId, name, color, player);
+            return await _game.Check(gameId, name, color, player);
         }
         catch (Exception e)
         {
             BadRequest("BAD_GAME_ID");
         }
+
+        return null;
     }
-
-    [HttpPost("GameOver")]
-    public Task GameOver(string gameId, PlayerType winner) => _game.EndGame(gameId, winner);
-
+    
     [HttpGet("Rooms")]
     public Task<List<Game>> GetAllGames() => _game.GetAllGames();
 }

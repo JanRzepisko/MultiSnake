@@ -74,21 +74,21 @@ public class GameService : IGameService
         await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player1, game.Player1);
         return gameId;
     }
-    
-    public async Task EndGame(string gameId, PlayerType winner)
+
+    public async Task RemoveRoom(string gameId)
     {
-        var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
-        var snakePlayer = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, winner);
-        snakePlayer.Won = true;
-        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, winner);
-        await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, winner, snakePlayer);
+        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player1);
+        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, PlayerType.Player2);
+        await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY);
+
     }
+
     public Task<Game> GetGameInstance(string gameId)
     {
         return _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
     }
 
-    public async Task Check(string gameId, string name, string color, PlayerType player)
+    public async Task<Snake> Check(string gameId, string name, string color, PlayerType player)
     {
         var game = await _redis.GetAsync<Game>(gameId, Keys.GAME_KEY);
         var snake = await _redis.GetAsync<Snake>(gameId, Keys.SNAKE_KEY, player);
@@ -98,6 +98,8 @@ public class GameService : IGameService
 
         await _redis.RemoveAsync(gameId, Keys.SNAKE_KEY, player);
         await _redis.CreateAsync(gameId, Keys.SNAKE_KEY, player, snake);
+
+        return snake;
     }
 
     public async Task<List<Game>> GetAllGames()

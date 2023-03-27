@@ -28,4 +28,11 @@ public class GameHub : Hub
     }
     [HubMethodName("Eat")]
     public Task Eat(string gameId, PlayerType playerId) => _game.MoveFood(gameId, playerId);
+
+    [HubMethodName("GameOver")]
+    public async Task GameOver(string gameId, GameOver whoWon)
+    {
+        await Clients.All.SendAsync("SEND", new { gameId, whoWon });
+        await _game.RemoveRoom(gameId);
+    }
 }

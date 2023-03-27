@@ -5,9 +5,8 @@ namespace MultiSnake.Structs;
 public class Game
 {
     public Game(string gameId) => GameId = gameId;
-
     public string GameId { get; }
-    public Point Food { get; set; } = null!;
+    public Point Food { get; private set; } = null!;
     public Snake Player1 { get; internal set; } = null!;
     public Snake Player2 { get; internal set; } = null!;
 

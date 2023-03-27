@@ -8,8 +8,8 @@ public class Point
         Y = y;
     }
 
-    public int X { get; private set; }
-    public int Y { get; private set; }
+    private int X { get; set; }
+    private int Y { get; set; }
 
     public Point MinusOnePosition()
     {
