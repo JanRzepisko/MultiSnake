@@ -23,12 +23,12 @@ public class Game
             GameId = this.GameId
         };
 
-        Player2.Positions.Add(new Point(7, 15));
-        Player2.Positions.Add(new Point(6, 15));
-        Player2.Positions.Add(new Point(5, 15));
-        Player2.Positions.Add(new Point(4, 15));
-        Player2.Positions.Add(new Point(3, 15));
-        Player2.Positions.Add(new Point(2, 15));
+        Player2.Positions.Add(new Point(7, 7));
+        Player2.Positions.Add(new Point(6, 7));
+        Player2.Positions.Add(new Point(5, 7));
+        Player2.Positions.Add(new Point(4, 7));
+        Player2.Positions.Add(new Point(3, 7));
+        Player2.Positions.Add(new Point(2, 7));
 
         Player1 = new Snake
         {
@@ -36,12 +36,12 @@ public class Game
             PlayerId = PlayerType.Player1,
             GameId = this.GameId
         };
-        Player1.Positions.Add(new Point(29, 15));
-        Player1.Positions.Add(new Point(28, 15));
-        Player1.Positions.Add(new Point(27, 15));
-        Player1.Positions.Add(new Point(26, 15));
-        Player1.Positions.Add(new Point(25, 15));
-        Player1.Positions.Add(new Point(24, 15));
+        Player1.Positions.Add(new Point(7, 23));
+        Player1.Positions.Add(new Point(6, 23));
+        Player1.Positions.Add(new Point(5, 23));
+        Player1.Positions.Add(new Point(4, 23));
+        Player1.Positions.Add(new Point(3, 23));
+        Player1.Positions.Add(new Point(2, 23));
     }
     
     public static string RandomString(int length)
