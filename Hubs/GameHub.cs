@@ -35,4 +35,10 @@ public class GameHub : Hub
        await Clients.All.SendAsync("GameOver", new { gameId, whoWon }); 
        await _game.RemoveRoom(gameId);
     }
+    
+    [HubMethodName("Join")]
+    public async Task Join(string gameId)
+    {
+        await Clients.All.SendAsync("GameStart", gameId);
+    }
 }
